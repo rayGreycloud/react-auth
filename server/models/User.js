@@ -29,8 +29,15 @@ userSchema.pre('save', function(next) {
   });
 });
 
+// NOT FOR PRODUCTION - Destroy old model if schema changed
+// delete mongoose.connection.models['user'];
+
 // Create a model class
-const ModelClass = mongoose.model('user', userSchema);
+const ModelClass =
+  mongoose.models && mongoose.models.user
+    ? mongoose.models.user
+    : mongoose.model('user', userSchema);
+// const ModelClass = mongoose.model('user', userSchema);
 
 // Export the model
 module.exports = ModelClass;
