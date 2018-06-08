@@ -14,6 +14,11 @@ function tokenForUser(user) {
   );
 }
 
+exports.signin = function(req, res, next) {
+  // User already verified - send token
+  res.send({ token: tokenForUser(req.user) });
+};
+
 exports.signup = function(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
@@ -49,8 +54,3 @@ exports.signup = function(req, res, next) {
     });
   });
 };
-
-// exports.signin = function(req, res, next) {
-//   const email = req.body.email;
-//   const password = req.body.password;
-// };
