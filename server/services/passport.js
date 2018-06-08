@@ -12,9 +12,29 @@ const localLogin = new LocalStrategy(localOptions, function(
   password,
   done
 ) {
-  // Verify username and password
-  // If verified, call done with user
-  // Else call done with false
+  // Verify email and password
+  User.findOne({ email: email }, function(err, user) {
+    if (err) {
+      return done(err, false);
+    }
+    // If email not found, no user, return false
+    if (!user) {
+      return done(null, false);
+    }
+
+    // Compare passwords
+    user.comparePassword(password, function(err, isMatch) {
+      if (err) {
+        return done(err, false);
+      }
+
+      if (!isMatch) {
+        return done(null, false);
+      }
+
+      return done(null, user);
+    });
+  });
 });
 
 // Set JWT strategy options
@@ -43,3 +63,4 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
 
 // Tell passport to use the Strategy
 passport.use(jwtLogin);
+passport.use(localLogin);
