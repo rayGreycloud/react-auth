@@ -6,6 +6,7 @@ export default ({ children }) => {
   return (
     <div>
       <Header />
+      <br />
       {children}
     </div>
   );
