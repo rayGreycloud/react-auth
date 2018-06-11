@@ -18,6 +18,23 @@ export const signup = (formProps, callback) => async dispatch => {
   }
 };
 
+export const signin = (formProps, callback) => async dispatch => {
+  // formProps contains email, password
+  try {
+    const response = await axios.post(
+      'http://localhost:5000/signin',
+      formProps
+    );
+    // Send action with jwt
+    dispatch({ type: AUTH_USER, payload: response.data.token });
+    // Set token in LS
+    localStorage.setItem('token', response.data.token);
+    callback(); // Pushes to /feature
+  } catch (e) {
+    dispatch({ type: AUTH_ERROR, payload: 'Invalid login credentials' });
+  }
+};
+
 export const signout = () => {
   localStorage.removeItem('token');
 
