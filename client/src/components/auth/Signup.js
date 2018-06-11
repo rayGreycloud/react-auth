@@ -1,10 +1,25 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+
+import * as actions from '../../actions';
 
 class Signup extends Component {
+  // Handler is arrow func so bind(this) unnecessary
+  onSubmit = formProps => {
+    this.props.signup(formProps, () => {
+      this.props.history.push('/feature');
+    });
+  };
+
   render() {
+    // Provided by redux form
+    const { handleSubmit } = this.props;
+
     return (
-      <form>
+      // Pass in handler to handleSubmit
+      <form onSubmit={handleSubmit(this.onSubmit)}>
         <fieldset>
           <label>Email </label>
           <Field
@@ -25,9 +40,19 @@ class Signup extends Component {
             placeholder=" enter a password"
           />
         </fieldset>
+        <div>{this.props.errorMessage}</div>
+        <button>Sign Up!</button>
       </form>
     );
   }
 }
 
-export default reduxForm({ form: 'signup' })(Signup);
+const mapStateToProps = state => ({
+  errorMessage: state.auth.errorMessage
+});
+
+// compose allows multiple HOC to be applied
+export default compose(
+  connect(mapStateToProps, actions),
+  reduxForm({ form: 'signup' })
+)(Signup);
